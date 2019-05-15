@@ -13,7 +13,7 @@ __pvactools_version__ = "1.3.7_mhci_2.19.1_mhcii_2.17.5"
 
 
 def prepare(neopip_loc="$HOME/.neopip", miniconda_loc="$HOME/.neopip/miniconda",
-            py27_env="py27", py3_env= "py3", logfile="/var/log/prepare.log"):
+            py27_env="py27", py3_env= "py3", logfile="/tmp/prepare.log"):
 
     # Set logging level and format
     datefmt = '%Y/%m/%d %H:%M:%S'
