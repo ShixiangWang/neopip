@@ -1,6 +1,8 @@
 import sys
 import logging
 import subprocess
+from os.path import expanduser
+
 
 """Prepare softwares and corresponding dependencies for neoantigen prediction"""
 
@@ -8,8 +10,9 @@ __author__ = "Shixiang Wang"
 __email__ = "w_shixiang@163.com"
 __pvactools_version__ = "1.3.7_mhci_2.19.1_mhcii_2.17.5"
 
+home = expanduser("~")
 
-def prepare(neopip_loc="~/.neopip", miniconda_loc="~/.neopip/miniconda",
+def prepare(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %home,
             py27_env="py27", py3_env= "py3", logfile="/tmp/prepare.log"):
 
     # Set logging level and format
@@ -31,6 +34,7 @@ def prepare(neopip_loc="~/.neopip", miniconda_loc="~/.neopip/miniconda",
         subprocess.call(["mkdir", "-p", neopip_loc])
     except Exception:
         logger.error("Failed to create directory %s", neopip_loc, exc_info=True)
+        sys.exit()
 
     logger.info("Prepare process is starting, log info will output to %s", logfile)
     
@@ -40,21 +44,25 @@ def prepare(neopip_loc="~/.neopip", miniconda_loc="~/.neopip/miniconda",
     try:
         subprocess.call(["wget", "-c", "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh", "-O", "/tmp/miniconda.sh"])
     except Exception:
-        logger.error("Failed to download miniconda, please check your network")
+        logger.error("Failed to download miniconda, please check your network", exc_info=True)
+        sys.exit()
 
     logger.info("Start Installing miniconda to %s", miniconda_loc)
     try:
         subprocess.call(["sh",  "/tmp/miniconda.sh", "-b", "-p", miniconda_loc])
     except Exception:
-        logger.error("Error occured in installation process")
+        logger.error("Error occured in installation process", exc_info=True)
+        #sys.exit()
     
     # Create conda environments for python 2.7 and python 3
-    logger.info("Create python 2.7 environment %s", py27_env)
+    py27_loc = miniconda_loc + "/" + py27_env
+    logger.info("Create python 2.7 environment %s", py27_loc)
     try:
-        subprocess.call(["%s/bin/conda" %miniconda_loc, "-p", py27_env, "python=2.7"])
+        subprocess.call(["%s/bin/conda" %miniconda_loc, "create", "-p", py27_loc, "python=2.7", "biopython", "-y"])
     except Exception:
-        logger.error("Fail to create the environment")
-    
+        logger.error("Fail to create the environment", exc_info=True)
+        sys.exit()
+   
     #logger.info("Create python 3 environment %s", py3_env)
     #try:
     #    subprocess.call("%s/bin/conda" %miniconda_loc, "-p", py3_env, "python=3")
