@@ -68,7 +68,7 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
     
     # Create base directory
     if not os.path.isdir(neopip_loc):
-        execute(["mkdir", "-p", neopip_loc])
+        os.system("mkdir -p %s"%neopip_loc)
 
     # Install miniconda
     logger.info("> Download miniconda to /tmp")
@@ -115,7 +115,9 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
     cmds = [envs_py3.activate_cmd,  "%s install -c bioconda ensembl-vep vcf2maf bcftools -y"%envs_py3.conda, envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
     logger.info(">>> Copy ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* to ~/.vep")
-    os.system("mkdir ~/.vep && cp %s/ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* ~/.vep"%data_dir)
+    if not os.path.isdir("~/.vep"):
+        os.system("mkdir ~/.vep")
+    os.system("cp %s/ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* ~/.vep"%data_dir)
 
     # IEDB softwares
     iedb_dir = "%s/iedb" % neopip_loc
