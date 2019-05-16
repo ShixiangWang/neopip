@@ -22,7 +22,7 @@ def execute(s, sep = " "):
     os.system(sep.join(s))
 
 
-def predict_prepare(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %home,
+def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %home,
             py27_env="py27", logfile="/tmp/prepare.log"):
 
     # Set logging level and format
@@ -100,13 +100,13 @@ def predict_prepare(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/min
     # IEDB MHC I 
     logger.info("Download and install IEDB MHC I  %s" %__mhc_i_version__)
     cmds = [envs_py27.activate_cmd, "wget -c https://downloads.iedb.org/tools/mhci/{0}/IEDB_MHC_I-{0}.tar.gz -O /tmp/IEDB_MHC_I.tar.gz".format(__mhc_i_version__),
-            "tar zxvf /tmp/IEDB_MHC_I.tar.gz -C %s"%iedb_dir, "cd %s/mhc_i"%iedb_dir, "python ./configure", envs_py27.deactivate_cmd]
+            "tar zxf /tmp/IEDB_MHC_I.tar.gz -C %s"%iedb_dir, "cd %s/mhc_i"%iedb_dir, "./configure", envs_py27.deactivate_cmd]
     execute(cmds, sep = " && ")
 
     # IEDB MHC II 
     logger.info("Download and install IEDB MHC II %s" %__mhc_ii_version__)
     cmds = [envs_py27.activate_cmd, "wget -c https://downloads.iedb.org/tools/mhcii/{0}/IEDB_MHC_II-{0}.tar.gz -O /tmp/IEDB_MHC_II.tar.gz".format(__mhc_ii_version__),
-            "tar zxvf /tmp/IEDB_MHC_II.tar.gz -C %s"%iedb_dir, "cd %s/mhc_ii"%iedb_dir, "python ./configure", envs_py27.deactivate_cmd]
+            "tar zxf /tmp/IEDB_MHC_II.tar.gz -C %s"%iedb_dir, "cd %s/mhc_ii"%iedb_dir, "python ./configure.py", envs_py27.deactivate_cmd]
     execute(cmds, sep = " && ")
 
 
@@ -116,17 +116,17 @@ def predict_prepare(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/min
         os.system("mkdir -p %s" % mhcflurry_dir)
     
     # Install pvactools
-    logger.info("Install pvactools 1.3.7")
+    logger.info("Install pvactools %s"%__pvactools_version__)
     cmds = [envs_py3.activate_cmd, "%s install tensorflow=1.5.0 -y"%envs_py3.conda, envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
-    cmds = [envs_py3.activate_cmd,  "export MHCFLURRY_DOWNLOADS_CURRENT_RELEASE=1.2.0", 
-            "export MHCFLURRY_DATA_DIR=%s"%mhcflurry_dir, "pip install pvactools==1.3.7", envs_py3.deactivate_cmd]
+    cmds = [envs_py3.activate_cmd, "pip install pvactools==%s"%__pvactools_version__, envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
 
-    cmds = [envs_py3.activate_cmd, "mhcflurry-downloads fetch", envs_py3.deactivate_cmd]
+    cmds = [envs_py3.activate_cmd, "export MHCFLURRY_DOWNLOADS_CURRENT_RELEASE=1.2.0", 
+            "export MHCFLURRY_DATA_DIR=%s"%mhcflurry_dir, "mhcflurry-downloads fetch", envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
     logger.info("Neoantigen prediction prepare process finished!")
 
 
 if __name__ == "__main__":
-    predict_prepare()
+    main()
