@@ -15,8 +15,15 @@ __pvactools_version__ = __prediction_version__[:5]
 __mhc_i_version__ = __prediction_version__[11:17]
 __mhc_ii_version__ = __prediction_version__[-6:]
 
+# Global setting
 home = expanduser("~")
 this_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+
+neopip_loc="%s/.neopip" %home
+miniconda_loc="%s/.neopip/miniconda" %home
+py27_env="py27"
+logfile="/tmp/prepare.log"
+
 
 def execute(s, sep = " "):
     os.system(sep.join(s))
@@ -122,6 +129,7 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
     cmds = [envs_py3.activate_cmd, "pip install pvactools==%s"%__pvactools_version__, envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
 
+    # Set data of mhcflurry to custom directory (is this good for analysis?)
     cmds = [envs_py3.activate_cmd, "export MHCFLURRY_DOWNLOADS_CURRENT_RELEASE=1.2.0", 
             "export MHCFLURRY_DATA_DIR=%s"%mhcflurry_dir, "mhcflurry-downloads fetch", envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
@@ -129,4 +137,5 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
 
 
 if __name__ == "__main__":
-    main()
+    main(neopip_loc=neopip_loc, miniconda_loc=miniconda_loc,
+        py27_env=py27_env, logfile=logfile)
