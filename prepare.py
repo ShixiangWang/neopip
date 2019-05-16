@@ -67,13 +67,9 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
     logger.info("========================================================================")
     
     # Create base directory
-    try:
+    if not os.path.isdir(neopip_loc):
         execute(["mkdir", "-p", neopip_loc])
-    except Exception:
-        logger.error("Failed to create directory %s", neopip_loc, exc_info=True)
-        sys.exit()
 
-    
     # Install miniconda
     logger.info("> Download miniconda to /tmp")
     try:
