@@ -91,7 +91,9 @@ def predict_prepare(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/min
     execute(cmds, sep = " && ")
 
     # Install pvactools
-    cmds = [envs_py3.activate_cmd,  "pip install -y pvactools", envs_py3.deactivate_cmd]
+    cmds = [envs_py3.activate_cmd, "%s install tensorflow=1.5.0 -y"%envs_py3.conda, envs_py3.deactivate_cmd]
+    execute(cmds, sep = " && ")
+    cmds = [envs_py3.activate_cmd,  "pip install pvactools", envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
    
    # Copy data ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz and iedb
@@ -100,9 +102,9 @@ def predict_prepare(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/min
    #    https://github.com/ShixiangWang/Variants2Neoantigen
    
     data_dir = "%s/data" % neopip_loc
-    execute("mkdir -p %s" % data_dir)
-    execute("cp -r %s %s" %(os.path.join(neopip_dir, "data"), data_dir))
-
+    os.system("mkdir -p %s" % data_dir)
+    os.system("cp -r %s/* %s" %(os.path.join(neopip_dir, "data"), data_dir))
+   
     logger.info("Neoantigen prediction prepare process finished!")
 
 
