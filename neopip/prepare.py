@@ -1,9 +1,7 @@
 import sys
+import os
 import logging
-import subprocess
 from os.path import expanduser
-from os import system
-
 
 """Prepare softwares and corresponding dependencies for neoantigen prediction"""
 
@@ -12,10 +10,10 @@ __email__ = "w_shixiang@163.com"
 __pvactools_version__ = "1.3.7_mhci_2.19.1_mhcii_2.17.5"
 
 home = expanduser("~")
+neopip_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
-def execute(s):
-    system(" ".join(s))
-    return(0)
+def execute(s, sep = " "):
+    os.system(sep.join(s))
 
 class conda_envs():
     def __init__(self, path, env):
@@ -25,16 +23,17 @@ class conda_envs():
 
         Note, all environments (except base) must be installed in envs subdirectory
         '''
-        self.path = path
+        self.conda_location = path
         if env == "base":
-            self.env_location = self.path
+            self.env_location = self.conda_location
         else:
             self.env_location = "{0}/envs/{1}".format(path, env)
+        self.conda = "{0}/bin/conda".format(self.conda_location)
         self.activate_cmd = "source {0}/bin/activate {1}".format(path, self.env_location)
         self.deactivate_cmd = "source {0}/bin/deactivate".format(path)
 
 
-def prepare(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %home,
+def predict_prepare(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %home,
             py27_env="py27", logfile="/tmp/prepare.log"):
 
     # Set logging level and format
@@ -53,7 +52,6 @@ def prepare(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" 
     # Create base directory
     logger.info("Create %s", neopip_loc)
     try:
-        #subprocess.call(["mkdir", "-p", neopip_loc])
         execute(["mkdir", "-p", neopip_loc])
     except Exception:
         logger.error("Failed to create directory %s", neopip_loc, exc_info=True)
@@ -64,7 +62,6 @@ def prepare(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" 
     # Install miniconda
     logger.info("Download miniconda to /tmp")
     try:
-        #subprocess.call(["wget", "-c", "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh", "-O", "/tmp/miniconda.sh"])
         execute(["wget", "-c", "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh", "-O", "/tmp/miniconda.sh"])
     except Exception:
         logger.error("Failed to download miniconda, please check your network", exc_info=True)
@@ -72,26 +69,42 @@ def prepare(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" 
 
     logger.info("Start Installing miniconda to %s", miniconda_loc)
     try:
-        #subprocess.call(["sh",  "/tmp/miniconda.sh", "-b", "-p", miniconda_loc])
         execute(["sh",  "/tmp/miniconda.sh", "-b", "-p", miniconda_loc])
     except Exception:
         logger.error("Error occured in installation process", exc_info=True)
         #sys.exit()
     
-    # Create conda environments for python 2.7 and python 3
     envs_py27 = conda_envs(miniconda_loc, py27_env)
-    logger.info("Create python 2.7 environment %s", envs_py27.path)
+    envs_py3 = conda_envs(miniconda_loc, "base")
+
+    # Create conda environments for python 2.7 and
+    # install softwares based on python 2.7
+    logger.info("Create python 2.7 environment %s", envs_py27.env_location)
     try:
-        #subprocess.call(["%s/bin/conda" %miniconda_loc, "create", "-p", py27_loc, "python=2.7", "biopython", "-y"])
-        execute(["%s/bin/conda" %miniconda_loc, "create", "-p", py27_loc, "python=2.7", "biopython", "-y"])
+        execute([envs_py27.conda, "create", "-p", envs_py27.env_location, "python=2.7", "biopython", "-y"])
     except Exception:
         logger.error("Fail to create the environment", exc_info=True)
         sys.exit()
 
-    py3_loc = miniconda_loc
-    execute("source %s/bin/activate")
-    
+    # Install vep and vcf2maf on python 3
+    cmds = [envs_py3.activate_cmd,  "%s install -c bioconda ensembl-vep vcf2maf -y"%envs_py3.conda, envs_py3.deactivate_cmd]
+    execute(cmds, sep = " && ")
+
+    # Install pvactools
+    cmds = [envs_py3.activate_cmd,  "pip install -y pvactools", envs_py3.deactivate_cmd]
+    execute(cmds, sep = " && ")
    
+   # Copy data ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz and iedb
+   # See:
+   #    https://gist.github.com/ckandoth/5390e3ae4ecf182fa92f6318cfa9fa97
+   #    https://github.com/ShixiangWang/Variants2Neoantigen
+   
+    data_dir = "%s/data" % neopip_loc
+    execute("mkdir -p %s" % data_dir)
+    execute("cp -r %s %s" %(os.path.join(neopip_dir, "data"), data_dir))
+
+    logger.info("Neoantigen prediction prepare process finished!")
+
 
 if __name__ == "__main__":
-    prepare()
+    predict_prepare()
