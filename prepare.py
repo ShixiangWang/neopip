@@ -15,6 +15,8 @@ __prediction_version__ = "1.3.7_mhci_2.19.1_mhcii_2.17.5"
 __pvactools_version__ = __prediction_version__[:5]
 __mhc_i_version__ = __prediction_version__[11:17]
 __mhc_ii_version__ = __prediction_version__[-6:]
+#MHCFLURRY_DOWNLOADS_CURRENT_RELEASE=1.2.0
+#tensorflow=1.5.0
 
 # Global setting
 home = expanduser("~")
@@ -118,11 +120,6 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
             "tar zxf /tmp/IEDB_MHC_II.tar.gz -C %s"%iedb_dir, "cd %s/mhc_ii"%iedb_dir, "python ./configure.py", envs_py27.deactivate_cmd]
     execute(cmds, sep = " && ")
 
-
-    mhcflurry_dir = "%s/data/mhcflurry_data" % neopip_loc
-    if not os.path.isdir(mhcflurry_dir):
-        logger.info("mhcflurry data directory %s does not exist, create it" %mhcflurry_dir)
-        os.system("mkdir -p %s" % mhcflurry_dir)
     
     # Install pvactools
     logger.info("Install pvactools %s"%__pvactools_version__)
@@ -131,10 +128,20 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
     cmds = [envs_py3.activate_cmd, "pip install pvactools==%s"%__pvactools_version__, envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
 
+    mhcflurry_dir = "%s/data/mhcflurry_data" %neopip_loc
+    if not os.path.isdir(mhcflurry_dir):
+        logger.info("mhcflurry data directory %s does not exist, create it" %mhcflurry_dir)
+        os.system("mkdir -p %s" % mhcflurry_dir)
+
     # Set data of mhcflurry to custom directory (is this good for analysis?)
     cmds = [envs_py3.activate_cmd, "export MHCFLURRY_DOWNLOADS_CURRENT_RELEASE=1.2.0", 
             "export MHCFLURRY_DATA_DIR=%s"%mhcflurry_dir, "mhcflurry-downloads fetch", envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
+
+    logger.info("Download pvacseq example data to %s" %neopip_loc)
+    cmds = [envs_py3.activate_cmd, "pvacseq download_example_data %s/data"%neopip_loc , envs_py3.deactivate_cmd]
+    execute(cmds, sep = " && ")
+    
     logger.info("Neoantigen prediction prepare process finished!")
 
 
