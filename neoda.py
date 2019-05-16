@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 import sys
 import argparse
@@ -15,11 +16,11 @@ def main(command, use_py3):
         envs = conda_envs(miniconda_loc, py27_env)
  
     if command == "activate":
-        os.system(envs.activate_cmd)
+        print(envs.activate_cmd)
     elif command == "deactivate":
-        os.system(envs.deactivate_cmd)
+        print(envs.deactivate_cmd)
     else:
-        print("Bad commad!")
+        print("Bad command!")
         sys.exit(1)
 
 if __name__ == "__main__":
