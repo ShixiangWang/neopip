@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import os
 import logging
@@ -10,7 +10,7 @@ from classes import conda_envs
 # Reference: https://github.com/griffithlab/docker-pvactools/blob/master/Dockerfile
 
 __author__ = "Shixiang Wang"
-__email__ = "w_shixiang@163.com"
+__email__ = "wangshx@shanghaitech.edu.cn"
 __prediction_version__ = "1.3.7_mhci_2.19.1_mhcii_2.17.5"
 __pvactools_version__ = __prediction_version__[:5]
 __mhc_i_version__ = __prediction_version__[11:17]
@@ -133,7 +133,7 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
     # QA: Perl script can't locate Env.pm in @INC - yum install perl-Env
     logger.info("> Download and install IEDB MHC II %s" %__mhc_ii_version__)
     cmds = [envs_py27.activate_cmd, "wget -c https://downloads.iedb.org/tools/mhcii/{0}/IEDB_MHC_II-{0}.tar.gz -O /tmp/IEDB_MHC_II.tar.gz".format(__mhc_ii_version__),
-            "tar zxf /tmp/IEDB_MHC_II.tar.gz -C %s"%iedb_dir, "cd %s/mhc_ii"%iedb_dir, "python ./configure.py", envs_py27.deactivate_cmd]
+            "tar zxf /tmp/IEDB_MHC_II.tar.gz -C %s"%iedb_dir, "cd %s/mhc_ii"%iedb_dir, "python configure.py", envs_py27.deactivate_cmd]
     execute(cmds, sep = " && ")
 
     
