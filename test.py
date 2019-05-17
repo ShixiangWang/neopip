@@ -41,12 +41,12 @@ print(__mhc_ii_version__)
 # logfile="/tmp/prepare.log"
 
 
-parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser()
 parser.add_argument("neopip-loaction", help="Installation location of neopip")
 parser.add_argument("--conda", help="Installation location of conda and environments (if not set, default is miniconda under installation location of neopip)")
 parser.add_argument("--vep", help="Data location of ensembl vep (if not set, default is vep under installation location of neopip)")
-parser.add_argument("--python2", default="py27", help="Conda environment name for python 2.7")
-parser.add_argument("--logfile", default="/tmp/prepare.log", help="Location of log file")
+parser.add_argument("--python2", default="py27", help="Conda environment name for python 2.7 (default: %(default)s)")
+parser.add_argument("--logfile", default="/tmp/prepare.log", help="Location of log file (default: %(default)s)")
 args = parser.parse_args()
 
 sys.exit()
