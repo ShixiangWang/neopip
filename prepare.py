@@ -30,9 +30,6 @@ vep_loc="%s/.neopip/vep" %home
 py27_env="py27"
 logfile="/tmp/prepare.log"
 
-
-
-
 def execute(s, sep = " "):
     os.system('bash -c "' + sep.join(s) + '"')
 
@@ -63,7 +60,7 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
     logger.info("========================================================================")
     logger.info("Except VEP data will be stored at %s,"%vep_loc)
     logger.info("    all others will put into %s"%neopip_loc)
-    logger.info("Custom conda environment path is %s"%miniconda_loc)
+    logger.info("Custom conda path is %s"%miniconda_loc)
     logger.info("")
     logger.info("Prepare process is starting, log info will output to %s", logfile)
     logger.info("")
