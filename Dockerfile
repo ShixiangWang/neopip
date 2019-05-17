@@ -10,10 +10,10 @@ RUN apt update -y && apt upgrade -y &&  \
     unzip bzip2 git python3-dev tree\
     tcsh gawk vim && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
-ADD prepare.py neoda.py neoda /root/
+ADD prepare.py classes.py neoda.py neoda /root/
 WORKDIR /root
 ENV HOME_NEOPIP=/public
-RUN mkdir /public && python prepare.py
+RUN mkdir /public && python3 prepare.py
 # Clean conda environments
 RUN . neoda activate --python3 && \
     conda clean -a -y && \
