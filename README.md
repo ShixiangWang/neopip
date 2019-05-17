@@ -8,6 +8,7 @@ reference: https://github.com/ShixiangWang/Variants2Neoantigen
 
 Following tools are needed before using **neopip**:
 
+- bash
 - Python 3
 - tcsh 
 - gawk
