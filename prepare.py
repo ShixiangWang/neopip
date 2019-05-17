@@ -19,11 +19,13 @@ __mhc_ii_version__ = __prediction_version__[-6:]
 #tensorflow=1.5.0
 
 # Global setting
-home = expanduser("~")
+#home = expanduser("~")
+home = '/public/data'
 this_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 neopip_loc="%s/.neopip" %home
 miniconda_loc="%s/.neopip/miniconda" %home
+vep_loc="%s/.neopip/vep" %home
 py27_env="py27"
 logfile="/tmp/prepare.log"
 
@@ -32,7 +34,7 @@ def execute(s, sep = " "):
     os.system('bash -c "' + sep.join(s) + '"')
 
 
-def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %home,
+def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %home, vep_loc = "%s/.neopip/vep" %home,
             py27_env="py27", logfile="/tmp/prepare.log"):
 
     # Set logging level and format
@@ -56,10 +58,9 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
     logger.info("Email   : %s"%__email__)
     logger.info("Version : %s"%__prediction_version__)
     logger.info("========================================================================")
-    logger.info("Except VEP data is store at ~/.vep,")
+    logger.info("Except VEP data will be stored at %s,"%vep_loc)
     logger.info("    all others will put into %s"%neopip_loc)
     logger.info("Custom conda environment path is %s"%miniconda_loc)
-    logger.info("    neoda is a wrapper for better manage conda environments here")
     logger.info("")
     logger.info("Prepare process is starting, log info will output to %s", logfile)
     logger.info("")
@@ -114,10 +115,10 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
     logger.info("> Install ensembl-vep vcf2maf bcftools")
     cmds = [envs_py3.activate_cmd,  "%s install -c bioconda ensembl-vep vcf2maf bcftools -y"%envs_py3.conda, envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
-    logger.info(">>> Copy ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* to ~/.vep")
-    if not os.path.isdir("~/.vep"):
-        os.system("mkdir ~/.vep")
-    os.system("cp %s/ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* ~/.vep"%data_dir)
+    logger.info(">>> Copy ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* to %s"%vep_loc)
+    if not os.path.isdir(vep_loc):
+        os.system("mkdir -p %s"%vep_loc)
+    os.system("cp {0}/ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* {1}".format(data_dir, vep_loc))
 
     # IEDB softwares
     iedb_dir = "%s/iedb" % neopip_loc
@@ -163,5 +164,5 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
 
 
 if __name__ == "__main__":
-    main(neopip_loc=neopip_loc, miniconda_loc=miniconda_loc,
+    main(neopip_loc=neopip_loc, miniconda_loc=miniconda_loc, vep_loc=vep_loc,
         py27_env=py27_env, logfile=logfile)
