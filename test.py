@@ -6,6 +6,11 @@ from os.path import expanduser
 import argparse
 
 
+print(os.environ['ahh'])
+
+sys.exit()
+
+
 conda_base = conda_envs("~/.neopip/miniconda", "base")
 print(conda_base.env_location)
 print(conda_base.activate_cmd)
@@ -17,8 +22,10 @@ print(conda_py27.env_location)
 print(conda_py27.activate_cmd)
 print(conda_py27.deactivate_cmd)
 
-os.system("echo Hello; echo world!")
-
+ac_msg = os.system("echo Hello; echo world!")
+print(ac_msg)
+ac_msg = subprocess.check_output("echo Hello; echo world!", shell = True)
+print(ac_msg.decode('utf8'))
 
 __prediction_version__ = "1.3.7_mhci_2.19.1_mhcii_2.17.5"
 __pvactools_version__ = __prediction_version__[:5]

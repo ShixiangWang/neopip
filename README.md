@@ -9,6 +9,7 @@ reference: https://github.com/ShixiangWang/Variants2Neoantigen
 Following tools are needed before using **neopip**:
 
 - bash
+- git
 - Python 3
 - tcsh 
 - gawk
@@ -39,4 +40,12 @@ Use
 
 ```
 vep_install -a cf -s homo_sapiens -y GRCh37 -c $HOME/.vep –CONVERT
+```
+
+Test vcf2maf and maf2vcf, maf2maf seems has problem
+
+```
+perl vcf2maf.pl --input-vcf tests/test.vcf --output-maf tests/test.vep.maf --vep-path /public/data/.neopip/miniconda/share/ensembl-vep-96.0-0/ --vep-data /public/data/.neopip/vep/ --ref-fasta /public/data/.neopip/vep/homo_sapiens/91_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa --filter-vcf 0 --cache-version 91
+
+perl maf2vcf.pl --input-maf tests/test.maf --output-dir test_maf2vcf  --ref-fasta /public/data/.neopip/vep/homo_sapiens/91_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa --per-tn-vcfs
 ```

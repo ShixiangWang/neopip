@@ -8,7 +8,11 @@ import argparse
 from classes import conda_envs
 
 """Prepare softwares and corresponding dependencies for neoantigen prediction"""
-# Reference: https://github.com/griffithlab/docker-pvactools/blob/master/Dockerfile
+# Reference: 
+# https://github.com/ShixiangWang/Variants2Neoantigen
+# https://github.com/griffithlab/docker-pvactools/blob/master/Dockerfile
+# https://pvactools.readthedocs.io/en/latest/pvacseq/input_file_prep/vep.html
+# https://gist.github.com/ckandoth/5390e3ae4ecf182fa92f6318cfa9fa97
 
 __author__ = "Shixiang Wang"
 __email__ = "wangshx@shanghaitech.edu.cn"
@@ -21,7 +25,10 @@ __mhc_ii_version__ = __prediction_version__[-6:]
 
 # Global setting
 #home = expanduser("~")
-home = '/public/data'
+home = os.environ.get("HOME_NEOPIP")
+if home is None:
+    print("Set environment variable HOME_NEOPIP before runnung!!")
+    sys.exit(1)
 this_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 neopip_loc="%s/.neopip" %home
@@ -112,8 +119,8 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
 
     # Install vep & vcf2maf on python 3 environment
     # https://bioconda.github.io/recipes/ensembl-vep/README.html
-    logger.info("> Install ensembl-vep vcf2maf bcftools")
-    cmds = [envs_py3.activate_cmd,  "%s install -c bioconda ensembl-vep vcf2maf bcftools -y"%envs_py3.conda, envs_py3.deactivate_cmd]
+    logger.info("> Install ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast")
+    cmds = [envs_py3.activate_cmd,  "conda install -c bioconda ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast -y", envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
     logger.info(">>> Copy ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* to %s"%vep_loc)
     if not os.path.isdir(vep_loc):
@@ -140,7 +147,7 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
     
     # Install pvactools
     logger.info("> Install pvactools %s"%__pvactools_version__)
-    cmds = [envs_py3.activate_cmd, "%s install tensorflow=1.5.0 -y"%envs_py3.conda, envs_py3.deactivate_cmd]
+    cmds = [envs_py3.activate_cmd, "conda install tensorflow=1.5.0 -y", envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
     cmds = [envs_py3.activate_cmd, "pip install pvactools==%s"%__pvactools_version__, envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
@@ -158,6 +165,11 @@ def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %ho
 
     logger.info(">>> Download pvacseq example data to %s" %data_dir)
     cmds = [envs_py3.activate_cmd, "pvacseq download_example_data %s"%data_dir , envs_py3.deactivate_cmd]
+    execute(cmds, sep = " && ")
+
+    logger.info(">>> Download and install VEP plugins to %s" %vep_loc)
+    cmds = [envs_py3.activate_cmd, "cd %s"%vep_loc, "git clone https://github.com/Ensembl/VEP_plugins.git",
+            "pvacseq install_vep_plugin %s/VEP_plugins"%vep_loc, envs_py3.deactivate_cmd]
     execute(cmds, sep = " && ")
     
     logger.info("> Neoantigen prediction prepare process finished!")
