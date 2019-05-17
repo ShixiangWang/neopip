@@ -3,6 +3,7 @@ import sys
 import os
 import logging
 from os.path import expanduser
+import argparse
 
 from classes import conda_envs
 
@@ -28,6 +29,8 @@ miniconda_loc="%s/.neopip/miniconda" %home
 vep_loc="%s/.neopip/vep" %home
 py27_env="py27"
 logfile="/tmp/prepare.log"
+
+
 
 
 def execute(s, sep = " "):

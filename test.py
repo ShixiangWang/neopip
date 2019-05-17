@@ -1,6 +1,9 @@
 from prepare import conda_envs
 import subprocess
 import os
+import sys
+from os.path import expanduser
+import argparse
 
 
 conda_base = conda_envs("~/.neopip/miniconda", "base")
@@ -25,3 +28,31 @@ __mhc_ii_version__ = __prediction_version__[-6:]
 print(__pvactools_version__)
 print(__mhc_i_version__)
 print(__mhc_ii_version__)
+
+#home = sys.argv[1]
+#print(home)
+
+# print(expanduser(home))
+
+# neopip_loc="%s/.neopip" %home
+# miniconda_loc="%s/.neopip/miniconda" %home
+# vep_loc="%s/.neopip/vep" %home
+# py27_env="py27"
+# logfile="/tmp/prepare.log"
+
+
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("neopip-loaction", help="Installation location of neopip")
+parser.add_argument("--conda", help="Installation location of conda and environments (if not set, default is miniconda under installation location of neopip)")
+parser.add_argument("--vep", help="Data location of ensembl vep (if not set, default is vep under installation location of neopip)")
+parser.add_argument("--python2", default="py27", help="Conda environment name for python 2.7")
+parser.add_argument("--logfile", default="/tmp/prepare.log", help="Location of log file")
+args = parser.parse_args()
+
+sys.exit()
+
+def main():
+    print("Yes")
+
+if __name__ == "__main__":
+    main()
