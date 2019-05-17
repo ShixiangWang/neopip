@@ -29,7 +29,7 @@ logfile="/tmp/prepare.log"
 
 
 def execute(s, sep = " "):
-    os.system('bash -c "' + sep.join(s), '"')
+    os.system('bash -c "' + sep.join(s) + '"')
 
 
 def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %home,
