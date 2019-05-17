@@ -11,6 +11,7 @@ RUN apt update -y && apt upgrade -y &&  \
     tcsh gawk vim && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
 ADD prepare.py classes.py neoda.py neoda /root/
+ADD data/ /root/
 WORKDIR /root
 ENV HOME_NEOPIP=/public
 RUN mkdir /public && python3 prepare.py
