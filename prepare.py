@@ -85,11 +85,13 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
         run("wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh", check=True, shell=True)
 
         logger.info("> Start Installing miniconda to %s", conda_loc)
-        run("sh /tmp/miniconda.sh -b -p %s"%conda_loc, check=True, shell=True)
+        run("sh /tmp/miniconda.sh -b -p %s"%conda_loc, shell=True)
         logger.info("> Activate conda...")
         # use bash
-        run("eval \"$({}/bin/conda shell.bash hook)\" && conda init".format(conda_loc), check=True, shell=True)
-
+        run("eval \"$({}/bin/conda shell.bash hook)\" && conda init bash".format(conda_loc), check=True, shell=True)
+    else:
+        logger.info("> Conda has already installed, skipping...")
+        run("conda init bash", check=True, shell=True)
     # Create conda environments pvactools_py27
     logger.info("> Create pvactools_py27 environment")
     run("conda create -n pvactools_py27 python=2.7 biopython pyyaml -y", check=True, shell=True)
@@ -107,8 +109,8 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
     # Install vep & vcf2maf on python 3 environment
     # https://bioconda.github.io/recipes/ensembl-vep/README.html
     logger.info("> Create neopip environment and install ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast")
-    run("conda create -n {} python=3".format(env_name), check=True, shell=True)
-    run("conda activate {} && conda install -c bioconda ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast -y".format(env_name), check=True, shell=True)
+    run(" -y".format(env_name), check=True, shell=True)
+    run("conda create -n {} -c bioconda python=3 ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast -y".format(env_name), check=True, shell=True)
     logger.info(">>> Copy ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* to %s"%vep_loc)
     create_dir(vep_loc)
     run("cp {0}/ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* {1}".format(data_dir, vep_loc), check=True, shell=True)
