@@ -94,8 +94,10 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
         run("conda init bash", check=True, shell=True)
     # Obtain conda path
     #conda_exe = run(['/bin/bash', '-c', 'echo $CONDA_EXE'], stdout=PIPE, shell=True).stdout.decode('utf-8')
-    #conda_exe = os.environ['CONDA_EXE']
-    conda_exe = join(conda_loc, 'bin/conda')
+    conda_exe = os.environ['CONDA_EXE']
+    # uncomment following cmd and comment the above
+    # when test in docker
+    #conda_exe = join(conda_loc, 'bin/conda')
     activate_exe = join(os.path.dirname(conda_exe), 'activate')
     print(conda_exe)
     # Create conda environments pvactools_py27

@@ -9,7 +9,8 @@ from subprocess import run, PIPE
 from utils import is_tool
 
 
-conda=os.environ['CONDA_EXE']
+#conda=os.environ['CONDA_EXE']
+conda = run(['/bin/bash', '-c', 'echo $CONDA_EXE'], stdout=PIPE, shell=True).stdout.decode('utf-8')
 print(conda)
 #env_check = run("conda;echo $?", shell=True)
 #print(env_check)
