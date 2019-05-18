@@ -91,7 +91,7 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
         run("eval \"$({}/bin/conda shell.bash hook)\"".format(conda_loc), check=True, shell=True)
         logger.info("> Conda init...")
         run("conda init", check=True, shell=True)
-
+    logger.info("> Conda is installed")
     # Create conda environments pvactools_py27
     logger.info("> Create pvactools_py27 environment")
     run("conda -n pvactools_py27 python=2.7 biopython pyyaml -y", check=True, shell=True)
