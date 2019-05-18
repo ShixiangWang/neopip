@@ -105,7 +105,7 @@ def main(neopip_loc=".neopip", miniconda_loc=".neopip/miniconda", vep_loc = ".ne
     # install softwares based on python 2.7
     logger.info("> Create python 2.7 environment %s", envs_py27.env_location)
     try:
-        execute([envs_py27.conda, "create", "-p", envs_py27.env_location, "python=2.7", "biopython", "-y"])
+        execute([envs_py27.conda, "create", "-p", envs_py27.env_location, "python=2.7", "biopython", "pyyaml", "-y"])
     except Exception:
         logger.error("Fail to create the environment", exc_info=True)
         sys.exit()
