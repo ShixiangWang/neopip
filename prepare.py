@@ -133,13 +133,19 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
     run("source {3} {0} && pip install pvactools=={1} && pvacseq download_example_data {2}".format(env_name, __pvactools_version__, data_dir, activate_exe), check=True, shell=True)
 
     mhcflurry_dir = create_dir(neopip_loc, "data", "mhcflurry_data")
-    logger.info(">>> Download mhcflurry data to %s" %mhcflurry_dir)
+    if os.path.exists(mhcflurry_dir):
+        logger.warn("%s exists, skipping install mhcflurry data...", mhcflurry_dir)
+    else:
+        logger.info(">>> Download mhcflurry data to %s", mhcflurry_dir)
 
-    # Set data of mhcflurry to custom directory (is this good for analysis?)
-    run("source {2} {0} && export MHCFLURRY_DOWNLOADS_CURRENT_RELEASE=1.2.0 && export MHCFLURRY_DATA_DIR={1} && mhcflurry-downloads fetch".format(env_name, mhcflurry_dir, activate_exe), check=True, shell=True)
+        # Set data of mhcflurry to custom directory (is this good for analysis?)
+        run("source {2} {0} && export MHCFLURRY_DOWNLOADS_CURRENT_RELEASE=1.2.0 && export MHCFLURRY_DATA_DIR={1} && mhcflurry-downloads fetch".format(env_name, mhcflurry_dir, activate_exe), check=True, shell=True)
 
-    logger.info(">>> Download and install VEP plugins to %s" %vep_loc)
-    run("source {2} {0} && cd {1} && git clone https://github.com/Ensembl/VEP_plugins.git && pvacseq install_vep_plugin {1}/VEP_plugins".format(env_name, vep_loc, activate_exe), check=True, shell=True)
+    if os.path.exists("%s/VEP_plugins"%vep_loc):
+        logger.warn("%s/VEP_plugins exists, skipping install plugins...",vep_loc)
+    else:
+        logger.info(">>> Download and install VEP plugins to %s" %vep_loc)
+        run("source {2} {0} && cd {1} && git clone https://github.com/Ensembl/VEP_plugins.git && pvacseq install_vep_plugin {1}/VEP_plugins".format(env_name, vep_loc, activate_exe), check=True, shell=True)
     
     logger.info("> Neoantigen prediction prepare process finished!")
     
