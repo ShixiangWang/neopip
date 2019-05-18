@@ -109,7 +109,6 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
     # Install vep & vcf2maf on python 3 environment
     # https://bioconda.github.io/recipes/ensembl-vep/README.html
     logger.info("> Create neopip environment and install ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast")
-    run(" -y".format(env_name), check=True, shell=True)
     run("conda create -n {} -c bioconda python=3 ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast -y".format(env_name), check=True, shell=True)
     logger.info(">>> Copy ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* to %s"%vep_loc)
     create_dir(vep_loc)
@@ -119,7 +118,7 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
     iedb_dir = create_dir(neopip_loc, "iedb")
     # IEDB MHC I 
     logger.info("> Download and install IEDB MHC I  %s" %__mhc_i_version__)
-    run("conda activate pvactools_py27 && wget -c https://downloads.iedb.org/tools/mhci/{0}/IEDB_MHC_I-{0}.tar.gz -O /tmp/IEDB_MHC_I.tar.gz && tar zxf /tmp/IEDB_MHC_I.tar.gz -C {1} && cd {1}/mhc_i && ./configure".format(__mhc_i_version__, iedb_dir), check=True, shell=True)
+    run("/bin/bash -c 'conda activate pvactools_py27' && wget -c https://downloads.iedb.org/tools/mhci/{0}/IEDB_MHC_I-{0}.tar.gz -O /tmp/IEDB_MHC_I.tar.gz && tar zxf /tmp/IEDB_MHC_I.tar.gz -C {1} && cd {1}/mhc_i && ./configure".format(__mhc_i_version__, iedb_dir), check=True, shell=True)
 
     # IEDB MHC II 
     # QA: Perl script can't locate Env.pm in @INC - yum install perl-Env
