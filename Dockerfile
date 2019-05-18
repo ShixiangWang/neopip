@@ -13,7 +13,8 @@ RUN apt update -y && apt upgrade -y &&  \
 RUN pip3 install pyyaml
 ADD prepare.py utils.py config.yaml data/ /root/
 WORKDIR /root
-RUN python3 prepare.py
+ENV CONDA_EXE /public/data/.neopip/miniconda/bin/conda
+RUN ["/bin/bash", "-c", "python3 prepare.py"]
 
 
 ## set up passwd in entrypoin.sh

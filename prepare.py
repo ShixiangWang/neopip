@@ -92,9 +92,15 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
     else:
         logger.info("> Conda has already installed, skipping...")
         run("conda init bash", check=True, shell=True)
+    # Obtain conda path
+    #conda_exe = run(['/bin/bash', '-c', 'echo $CONDA_EXE'], stdout=PIPE, shell=True).stdout.decode('utf-8')
+    #conda_exe = os.environ['CONDA_EXE']
+    conda_exe = join(conda_loc, 'bin/conda')
+    activate_exe = join(os.path.dirname(conda_exe), 'activate')
+    print(conda_exe)
     # Create conda environments pvactools_py27
     logger.info("> Create pvactools_py27 environment")
-    run("conda create -n pvactools_py27 python=2.7 biopython pyyaml -y", check=True, shell=True)
+    run("{} create -n pvactools_py27 python=2.7 biopython pyyaml -y".format(conda_exe), check=True, shell=True)
    
    # Copy data ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz and iedb
    # See:
@@ -109,13 +115,10 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
     # Install vep & vcf2maf on python 3 environment
     # https://bioconda.github.io/recipes/ensembl-vep/README.html
     logger.info("> Create neopip environment and install ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast")
-    run("conda create -n {} -c bioconda python=3 ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast -y".format(env_name), check=True, shell=True)
+    run("{0} create -n {1} -c bioconda python=3 ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast -y".format(conda_exe, env_name), check=True, shell=True)
     logger.info(">>> Copy ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* to %s"%vep_loc)
     create_dir(vep_loc)
     run("cp {0}/ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* {1}".format(data_dir, vep_loc), check=True, shell=True)
-    # Obtain conda path
-    conda_exe = os.environ['CONDA_EXE']
-    activate_exe = join(os.path.dirname(conda_exe), 'activate')
     
     # IEDB softwares
     iedb_dir = create_dir(neopip_loc, "iedb")
