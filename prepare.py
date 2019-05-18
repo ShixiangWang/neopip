@@ -92,7 +92,7 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
 
     # Create conda environments pvactools_py27
     logger.info("> Create pvactools_py27 environment")
-    run("conda -n pvactools_py27 python=2.7 biopython pyyaml -y", check=True, shell=True)
+    run("conda create -n pvactools_py27 python=2.7 biopython pyyaml -y", check=True, shell=True)
    
    # Copy data ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz and iedb
    # See:
