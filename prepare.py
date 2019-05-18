@@ -109,8 +109,8 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
     # Install vep & vcf2maf on python 3 environment
     # https://bioconda.github.io/recipes/ensembl-vep/README.html
     logger.info("> Create neopip environment and install ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast")
-    run("conda create -n {} python=3".format(env_name), check=True, shell=True)
-    run("conda activate {} && conda install -c bioconda ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast -y".format(env_name), check=True, shell=True)
+    run(['/bin/bash', '-c', "conda create -n {} python=3".format(env_name)], check=True, shell=True)
+    run(['/bin/bash', '-c', "conda activate {} && conda install -c bioconda ensembl-vep vcf2maf samtools bcftools ucsc-liftover blast -y".format(env_name)], check=True, shell=True)
     logger.info(">>> Copy ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* to %s"%vep_loc)
     create_dir(vep_loc)
     run("cp {0}/ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz* {1}".format(data_dir, vep_loc), check=True, shell=True)
@@ -119,28 +119,28 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
     iedb_dir = create_dir(neopip_loc, "iedb")
     # IEDB MHC I 
     logger.info("> Download and install IEDB MHC I  %s" %__mhc_i_version__)
-    run("conda activate pvactools_py27 && wget -c https://downloads.iedb.org/tools/mhci/{0}/IEDB_MHC_I-{0}.tar.gz -O /tmp/IEDB_MHC_I.tar.gz && tar zxf /tmp/IEDB_MHC_I.tar.gz -C {1} && cd {1}/mhc_i && ./configure".format(__mhc_i_version__, iedb_dir), check=True, shell=True)
+    run(['/bin/bash', '-c', "conda activate pvactools_py27 && wget -c https://downloads.iedb.org/tools/mhci/{0}/IEDB_MHC_I-{0}.tar.gz -O /tmp/IEDB_MHC_I.tar.gz && tar zxf /tmp/IEDB_MHC_I.tar.gz -C {1} && cd {1}/mhc_i && ./configure".format(__mhc_i_version__, iedb_dir)], check=True, shell=True)
 
     # IEDB MHC II 
     # QA: Perl script can't locate Env.pm in @INC - yum install perl-Env
     logger.info("> Download and install IEDB MHC II %s" %__mhc_ii_version__)
-    run("conda activate pvactools_py27 && wget -c https://downloads.iedb.org/tools/mhcii/{0}/IEDB_MHC_II-{0}.tar.gz -O /tmp/IEDB_MHC_II.tar.gz && tar zxf /tmp/IEDB_MHC_II.tar.gz -C {1} && cd {1}/mhc_ii && python configure.py".format(__mhc_ii_version__, iedb_dir), check=True, shell=True)
+    run(['/bin/bash', '-c', "conda activate pvactools_py27 && wget -c https://downloads.iedb.org/tools/mhcii/{0}/IEDB_MHC_II-{0}.tar.gz -O /tmp/IEDB_MHC_II.tar.gz && tar zxf /tmp/IEDB_MHC_II.tar.gz -C {1} && cd {1}/mhc_ii && python configure.py".format(__mhc_ii_version__, iedb_dir)], check=True, shell=True)
 
     # Install pvactools
     logger.info("> Install pvactools {0} and download example data to {1}".format(__pvactools_version__, data_dir))
-    run("conda activate {0} && pip install pvactools=={1} && pvacseq download_example_data {2}".format(env_name, __pvactools_version__, data_dir), check=True, shell=True)
+    run(['/bin/bash', '-c', "conda activate {0} && pip install pvactools=={1} && pvacseq download_example_data {2}".format(env_name, __pvactools_version__, data_dir)], check=True, shell=True)
 
     mhcflurry_dir = create_dir(neopip_loc, "data", "mhcflurry_data")
     logger.info(">>> Download mhcflurry data to %s" %mhcflurry_dir)
 
     # Set data of mhcflurry to custom directory (is this good for analysis?)
-    run("conda activate {0} && export MHCFLURRY_DOWNLOADS_CURRENT_RELEASE=1.2.0 && export MHCFLURRY_DATA_DIR={1} && mhcflurry-downloads fetch".format(env_name, mhcflurry_dir), check=True, shell=True)
+    run(['/bin/bash', '-c', "conda activate {0} && export MHCFLURRY_DOWNLOADS_CURRENT_RELEASE=1.2.0 && export MHCFLURRY_DATA_DIR={1} && mhcflurry-downloads fetch".format(env_name, mhcflurry_dir)], check=True, shell=True)
 
     logger.info(">>> Download and install VEP plugins to %s" %vep_loc)
-    run("conda activate {0} && cd {1} && git clone https://github.com/Ensembl/VEP_plugins.git && pvacseq install_vep_plugin {1}/VEP_plugins".format(env_name, vep_loc), check=True, shell=True)
+    run(['/bin/bash', '-c', "conda activate {0} && cd {1} && git clone https://github.com/Ensembl/VEP_plugins.git && pvacseq install_vep_plugin {1}/VEP_plugins".format(env_name, vep_loc)], check=True, shell=True)
     
     logger.info("> Neoantigen prediction prepare process finished!")
-    
+
 if __name__ == "__main__":
     main(neopip_loc=neopip_loc, conda_loc=conda_loc, vep_loc=vep_loc,
         env_name=env_name, logfile=logfile)
