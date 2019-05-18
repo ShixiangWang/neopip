@@ -7,11 +7,11 @@ FROM ubuntu:latest
 MAINTAINER Shixiang Wang, wangshx@shanghaitech.edu.cn
 RUN apt update -y && apt upgrade -y &&  \
     apt install -y wget curl \
-    unzip bzip2 git python3-dev tree\
+    unzip bzip2 git python3-dev python3-pip tree\
     tcsh gawk vim && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
-ADD prepare.py utils.py /root/
-ADD data/ /root/
+RUN pip3 install pyyaml
+ADD prepare.py utils.py config.yaml data/ /root/
 WORKDIR /root
 RUN python3 prepare.py
 
