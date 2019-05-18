@@ -85,13 +85,13 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
         run("wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh", check=True, shell=True)
 
         logger.info("> Start Installing miniconda to %s", conda_loc)
-        run("sh /tmp/miniconda.sh -b -p %s"%conda_loc, check=True, shell=True)
+        run("sh /tmp/miniconda.sh -b -p %s"%conda_loc, shell=True)
         logger.info("> Activate conda...")
         # use bash
-        run("eval \"$({}/bin/conda shell.bash hook)\"".format(conda_loc), check=True, shell=True)
-        logger.info("> Conda init...")
-        run("conda init", check=True, shell=True)
+        run("eval \"$({}/bin/conda shell.bash hook)\" && conda init".format(conda_loc), check=True, shell=True)
+    
     logger.info("> Conda is installed")
+
     # Create conda environments pvactools_py27
     logger.info("> Create pvactools_py27 environment")
     run("conda -n pvactools_py27 python=2.7 biopython pyyaml -y", check=True, shell=True)
