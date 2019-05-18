@@ -11,6 +11,8 @@ Following tools are needed before using **neopip**:
 - bash
 - git
 - Python 3
+  -  yaml
+  -  snakemake
 - tcsh 
 - gawk
 - wget

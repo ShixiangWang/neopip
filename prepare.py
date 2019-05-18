@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import sys
 import os
-import logging
-from os.path import expanduser
+import yaml
 import argparse
-
+import logging
+from os.path import expanduser, join
 from classes import conda_envs
 
 """Prepare softwares and corresponding dependencies for neoantigen prediction"""
@@ -24,25 +24,33 @@ __mhc_ii_version__ = __prediction_version__[-6:]
 #tensorflow=1.5.0
 
 # Global setting
-#home = expanduser("~")
-home = os.environ.get("HOME_NEOPIP")
-if home is None:
-    print("Set environment variable HOME_NEOPIP before runnung!!")
-    sys.exit(1)
-this_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+# Read configuration from yaml file
+with open("config.yaml") as f:
+    config = yaml.load(f, Loader=yaml.BaseLoader)
+home = expanduser(config['prepare']['home'])
 
-neopip_loc="%s/.neopip" %home
-miniconda_loc="%s/.neopip/miniconda" %home
-vep_loc="%s/.neopip/vep" %home
-py27_env="py27"
-logfile="/tmp/prepare.log"
+print("Checking configuration...")
+print("Setting paths...")
+if home is not None:
+    neopip_loc = home
+    miniconda_loc = join(home, config['prepare']['miniconda'])
+    vep_loc = join(home, config['prepare']['vep'])
+else:
+    neopip_loc = expanduser(config['prepare']['neopip'])
+    miniconda_loc = expanduser(config['prepare']['miniconda'])
+    vep_loc = expanduser(config['prepare']['vep'])
+
+py27_env=config['prepare']['py27_env']
+logfile=config['prepare']['logfile']
+print("Done.")
+
+this_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 def execute(s, sep = " "):
     os.system('bash -c "' + sep.join(s) + '"')
 
 
-def main(neopip_loc="%s/.neopip" %home, miniconda_loc="%s/.neopip/miniconda" %home, vep_loc = "%s/.neopip/vep" %home,
-            py27_env="py27", logfile="/tmp/prepare.log"):
+def main(neopip_loc=".neopip", miniconda_loc=".neopip/miniconda", vep_loc = ".neopip/vep", py27_env="py27", logfile="/tmp/prepare.log"):
 
     # Set logging level and format
     datefmt = '%Y/%m/%d %H:%M:%S'

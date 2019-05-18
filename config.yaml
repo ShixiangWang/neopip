@@ -1,0 +1,66 @@
+# This file is used to configure parameters for neoantigen prediction
+
+# Basic config for location of softwares
+prepare:
+  # The home define the basic directory
+  # for storing all softwares,
+  # set it to null if you want to use
+  # custom paths for neopip data, miniconda and vep data
+  home: /public/data/.neopip
+  # data location of neopip,
+  # if home set, use same location as home
+  # otherwise use neopip
+  neopip: null
+  # custom path for miniconda
+  miniconda: miniconda
+  # custom path for vep data, not vep software
+  # of note, user needs to install cache data by hand (see README.md)
+  vep: vep
+  # conda environment name for python 2.7
+  # the basic conda use python 3
+  py27_env: py27
+  # log file for prepare step
+  logfile: /tmp/prepare.log
+
+# VEP needs hugo space, so user may install VEP, 
+# cache data and plugins to custom directories.
+# At default, use VEP software install from conda,
+# use VEP cache data under .neopip/vep
+# If any path at the below set, it will be used first 
+vep:
+  vep_path   : null #/public/data/.neopip/miniconda/share/ensembl-vep-96.0-0/
+  plugin_path: null #~/VEP_plugins
+  cache_path : null #/public/data/.neopip/vep 
+  cache_version: 91
+
+# Reference file and version
+reference:
+  fasta: /public/data/.neopip/vep/homo_sapiens/91_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa 
+  assembly_version: GRCh37  # i.e. hg19
+
+vcf2maf:
+  maf2vcf: maf2vcf.pl
+
+
+# Input for prediction
+input:
+  variants:
+    type: MAF
+    path: test/input.maf
+  hla:
+    path: test/input_hla.tsv
+
+# Output for prediction
+output:
+  path: test/output
+
+# Args of prediction methods
+prediction_args:
+  # multiple methods separated by space, 
+  # like "NetMHC PickPocket NetMHCcons NNalign", 
+  # but multiple method is not recommend
+  argorithms: NetMHC                                         
+  epitope_len: 9    
+
+   
+
