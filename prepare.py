@@ -29,8 +29,6 @@ with open("config.yaml") as f:
     config = yaml.load(f, Loader=yaml.BaseLoader)
 home = expanduser(config['prepare']['home'])
 
-print("Checking configuration...")
-print("Setting paths...")
 if home is not None:
     neopip_loc = home
     miniconda_loc = join(home, config['prepare']['miniconda'])
@@ -42,7 +40,6 @@ else:
 
 py27_env=config['prepare']['py27_env']
 logfile=config['prepare']['logfile']
-print("Done.")
 
 this_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
