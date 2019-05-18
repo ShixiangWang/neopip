@@ -1,4 +1,3 @@
-from prepare import conda_envs
 import subprocess
 import os
 import sys
@@ -6,11 +5,14 @@ from os.path import expanduser
 import argparse
 import glob
 import yaml
+from subprocess import run, PIPE
+from utils import is_tool
 
 
 #print(os.environ['ahh'])
-print(glob.glob('test/output/tumor_normal_vcf_pair/*_vs_*.vcf'))
-
+env_check = run("conda;echo $?", shell=True)
+print(env_check)
+sys.exit()
 with open("config.yaml") as f:
     config = yaml.load(f, Loader=yaml.BaseLoader)
 print(config['vep']['vep_path']=='null')

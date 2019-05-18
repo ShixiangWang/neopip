@@ -11,16 +11,18 @@ prepare:
   # if home set, use same location as home
   # otherwise use neopip
   neopip: null
-  # custom path for miniconda
-  miniconda: miniconda
   # custom path for vep data, not vep software
   # of note, user needs to install cache data by hand (see README.md)
   vep: vep
-  # conda environment name for python 2.7
-  # the basic conda use python 3
-  # dont modify this, this name is used in pvactools code
-  # https://github.com/griffithlab/pVACtools/blob/d1b8f833788b63557abb8fc393ec36675a7505bc/lib/call_iedb.py#L10
-  py27_env: pvactools_py27
+  # conda environment name for neopip
+  # if conda is not installed,
+  # a minoconda and necessary environments will be installed
+  # of note, a pvactools_py27 environment
+  # will be created automatically for pvactools
+  conda:
+    env_name: neopip
+    # custom path
+    path: miniconda
   # log file for prepare step
   logfile: /tmp/prepare.log
 
