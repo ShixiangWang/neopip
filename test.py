@@ -4,10 +4,16 @@ import os
 import sys
 from os.path import expanduser
 import argparse
+import glob
+import yaml
 
 
-print(os.environ['ahh'])
+#print(os.environ['ahh'])
+print(glob.glob('test/output/tumor_normal_vcf_pair/*_vs_*.vcf'))
 
+with open("config.yaml") as f:
+    config = yaml.load(f, Loader=yaml.BaseLoader)
+print(config['vep']['vep_path']=='null')
 sys.exit()
 
 

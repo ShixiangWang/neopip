@@ -22,6 +22,8 @@ prepare:
   # log file for prepare step
   logfile: /tmp/prepare.log
 
+threads: 4
+
 # VEP needs hugo space, so user may install VEP, 
 # cache data and plugins to custom directories.
 # At default, use VEP software install from conda,
@@ -32,14 +34,16 @@ vep:
   plugin_path: null #~/VEP_plugins
   cache_path : null #/public/data/.neopip/vep 
   cache_version: 91
+  assembly_version: GRCh37  # i.e. hg19
 
 # Reference file and version
 reference:
   fasta: /public/data/.neopip/vep/homo_sapiens/91_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa 
-  assembly_version: GRCh37  # i.e. hg19
+  
 
 vcf2maf:
   maf2vcf: maf2vcf.pl
+  vcf2maf: vcf2maf.pl
 
 
 # Input for prediction
@@ -54,6 +58,9 @@ input:
 output:
   path: test/output
 
+
+# Args of VEP
+vep_args: null  
 # Args of prediction methods
 prediction_args:
   # multiple methods separated by space, 
