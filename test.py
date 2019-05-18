@@ -9,9 +9,10 @@ from subprocess import run, PIPE
 from utils import is_tool
 
 
-#print(os.environ['ahh'])
-env_check = run("conda;echo $?", shell=True)
-print(env_check)
+conda=os.environ['CONDA_EXE']
+print(conda)
+#env_check = run("conda;echo $?", shell=True)
+#print(env_check)
 sys.exit()
 with open("config.yaml") as f:
     config = yaml.load(f, Loader=yaml.BaseLoader)
