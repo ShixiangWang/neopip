@@ -87,9 +87,20 @@ env_name = config['prepare']['conda']['env_name']
 #         print("> Output tumor vcf files to %s" %dir_tumor_vcf)
 #         print("> Done.")
 
+get_tumor_vcfs(path=os.path.dirname(VCF) if 'VCF' in globals() else join(config['output']['path'], 'tumor_single_vcfs')):
+    vcfs = glob.glob(path)
+    res = {dir=list(), filepath=list()}
+    for i in vcfs:
+        res['filepath'].append(i)
+    res['dir'].append(os.path.dirname(path))
+    return(res)
+
+
 rule vep_annotate:
     input:
         #join(os.path.dirname(VCF) if 'VCF' in globals() else join(config['output']['path'], 'tumor_single_vcfs'), "{sample}.vcf")
+        expand("{}/{sample}.vcf".format(get_tumor_vcf()['dir']), sample=get_tumor_vcfs()['filepath'])
+        
         "{dir_somatic_vcf}/{sample}.vcf"#join(config['output']['path'], 'tumor_single_vcfs', "{sample}.vcf")
         #"test/output/tumor_single_vcfs/CGLU290.vcf"
     output:
