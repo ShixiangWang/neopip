@@ -62,7 +62,6 @@ rule maf2vcf:
                         maffile=input.maf,
                         output=dir_pair_vcf, 
                         fasta=reference_fasta)
-        cmds = exeute([PY3.activate_cmd, cmds, PY3.deactivate_cmd], sep = ' && ')
         run("source {0} {1} && {2}".format(activate_exe, env_name, cmds), check=True, shell=True)
         #print(cmds)
         print("> Output paired vcf files to %s" %dir_pair_vcf)
