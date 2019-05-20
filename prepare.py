@@ -89,6 +89,7 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
         logger.info("> Activate conda...")
         # use bash
         run("eval \"$({}/bin/conda shell.bash hook)\" && conda init bash".format(conda_loc), check=True, shell=True)
+        run("conda install -y -c bioconda snakemake pyyaml", check=True, shell=True)
     else:
         logger.info("> Conda has already installed, skipping...")
         run("conda init bash", check=True, shell=True)
@@ -134,7 +135,7 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
 
     # Install pvactools
     logger.info("> Install pvactools {0} and download example data to {1}".format(__pvactools_version__, data_dir))
-    run("source {3} {0} && pip install pvactools=={1} && pvacseq download_example_data {2}".format(env_name, __pvactools_version__, data_dir, activate_exe), check=True, shell=True)
+    run("source {3} {0} && pip install pvactools=={1} && pvacseq download_example_data {2}".format(env_name, __pvactools_version__, data_dir, activate_exe), shell=True)
 
     mhcflurry_dir = create_dir(neopip_loc, "data", "mhcflurry_data")
     if os.path.exists(mhcflurry_dir):

@@ -10,7 +10,7 @@ import csv
 from os.path import join, expanduser
 from subprocess import run, PIPE
 from utils import create_dir
-from prepare import neopip_loc, miniconda_loc, vep_loc
+from prepare import neopip_loc, vep_loc
 
 
 # Global definition
