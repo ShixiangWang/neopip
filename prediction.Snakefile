@@ -45,47 +45,47 @@ env_name = config['prepare']['conda']['env_name']
 
 # If input variant file format is MAF
 # extra steps are needed.
-rule maf2vcf:
-    input:
-        maf = MAF
-    output:
-        glob.glob(join(config['output']['path'], 'tumor_single_vcfs', "*.vcf"))
-    log: '/tmp/neopip_log/maf2vcf.log'
-    threads: config['threads']
-    run:
-        if not os.path.isfile(input.maf):
-            print("> Cannot find Maf file. Exiting...")
-            sys.exit(1)
-        print("> Maf file detected")
-        dir_pair_vcf = create_dir(config['output']['path'], 'tumor_normal_vcf_pair')
-        print("> Run maf2vcf.pl...")
-        cmds = """{maf2vcf} --input-maf {maffile} \
-                            --output-dir {output} \
-                            --ref-fasta {fasta}   \
-                            --per-tn-vcfs
-               """.format(maf2vcf=config['vcf2maf']['maf2vcf'], 
-                        maffile=input.maf,
-                        output=dir_pair_vcf, 
-                        fasta=reference_fasta)
-        run("source {0} {1} && {2}".format(activate_exe, env_name, cmds), check=True, shell=True)
-        #print(cmds)
-        print("> Output paired vcf files to %s" %dir_pair_vcf)
-        print("> Done.")
+# rule maf2vcf:
+#     input:
+#         maf = MAF
+#     output:
+#         glob.glob(join(config['output']['path'], 'tumor_single_vcfs', "*.vcf"))
+#     log: '/tmp/neopip_log/maf2vcf.log'
+#     threads: config['threads']
+#     run:
+#         if not os.path.isfile(input.maf):
+#             print("> Cannot find Maf file. Exiting...")
+#             sys.exit(1)
+#         print("> Maf file detected")
+#         dir_pair_vcf = create_dir(config['output']['path'], 'tumor_normal_vcf_pair')
+#         print("> Run maf2vcf.pl...")
+#         cmds = """{maf2vcf} --input-maf {maffile} \
+#                             --output-dir {output} \
+#                             --ref-fasta {fasta}   \
+#                             --per-tn-vcfs
+#                """.format(maf2vcf=config['vcf2maf']['maf2vcf'], 
+#                         maffile=input.maf,
+#                         output=dir_pair_vcf, 
+#                         fasta=reference_fasta)
+#         run("source {0} {1} && {2}".format(activate_exe, env_name, cmds), check=True, shell=True)
+#         #print(cmds)
+#         print("> Output paired vcf files to %s" %dir_pair_vcf)
+#         print("> Done.")
         
-        print("> Delete VCF column of normal sample...")
-        dir_tumor_vcf = create_dir(config['output']['path'], 'tumor_single_vcfs')
-        vcfs = glob.glob("%s/*_vs_*.vcf"%dir_pair_vcf)
-        # process vcf
-        for vcf in vcfs:
-            sample = re.sub(r'(.*)_vs.*', r'\1',os.path.basename(vcf))
-            print(">>> processing %s"%sample)
-            cmds = r"""cat {vcf} | \
-                      awk 'BEGIN{{FS="\t";OFS="\t"}}{{if($1 ~ /^##]/){{print $0}}else{{print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10}}}}' \
-                       > {dir}/{sample}.vcf
-                    """.format(vcf=vcf, dir=dir_tumor_vcf, sample=sample)
-            run(cmds, check=True, shell=True)
-        print("> Output tumor vcf files to %s" %dir_tumor_vcf)
-        print("> Done.")
+#         print("> Delete VCF column of normal sample...")
+#         dir_tumor_vcf = create_dir(config['output']['path'], 'tumor_single_vcfs')
+#         vcfs = glob.glob("%s/*_vs_*.vcf"%dir_pair_vcf)
+#         # process vcf
+#         for vcf in vcfs:
+#             sample = re.sub(r'(.*)_vs.*', r'\1',os.path.basename(vcf))
+#             print(">>> processing %s"%sample)
+#             cmds = r"""cat {vcf} | \
+#                       awk 'BEGIN{{FS="\t";OFS="\t"}}{{if($1 ~ /^##]/){{print $0}}else{{print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10}}}}' \
+#                        > {dir}/{sample}.vcf
+#                     """.format(vcf=vcf, dir=dir_tumor_vcf, sample=sample)
+#             run(cmds, check=True, shell=True)
+#         print("> Output tumor vcf files to %s" %dir_tumor_vcf)
+#         print("> Done.")
 
 rule annotate:
     input:
