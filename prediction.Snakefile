@@ -26,9 +26,9 @@ predict_methods = config['prediction_args']['argorithms']
 predict_epitope_len = config['prediction_args']['epitope_len']
 
 IEDB_PATH         = join(neopip_loc, 'iedb') 
-VEP_PATH          = config['vep']['vep_path'] if config['vep']['vep_path'] != 'null' else 'vep'
-VEP_PLUGIN_PATH   = config['vep']['plugin_path'] if config['vep']['plugin_path'] != 'null' else join(vep_loc, 'VEP_plugins') 
-VEP_DATA_PATH     = config['vep']['cache_path'] if config['vep']['cache_path'] != 'null' else join(neopip_loc, 'vep')
+VEP_PATH          = config['vep']['vep_path'] if config['vep']['vep_path'] is not None else 'vep'
+VEP_PLUGIN_PATH   = config['vep']['plugin_path'] if config['vep']['plugin_path'] is not None else join(vep_loc, 'VEP_plugins') 
+VEP_DATA_PATH     = config['vep']['cache_path'] if config['vep']['cache_path'] is not None else join(neopip_loc, 'vep')
 VEP_CACHE_VERSION = config['vep']['cache_version']
 VEP_ASSEMBLY_VERSION = config['vep']['assembly_version']
 
@@ -87,11 +87,11 @@ env_name = config['prepare']['conda']['env_name']
 #         print("> Output tumor vcf files to %s" %dir_tumor_vcf)
 #         print("> Done.")
 
-rule annotate:
+rule vep_annotate:
     input:
         #join(os.path.dirname(VCF) if 'VCF' in globals() else join(config['output']['path'], 'tumor_single_vcfs'), "{sample}.vcf")
-        #join(config['output']['path'], 'tumor_single_vcfs', "{sample}.vcf")
-        "test/output/tumor_single_vcfs/CGLU290.vcf"
+        "{dir_somatic_vcf}/{sample}.vcf"#join(config['output']['path'], 'tumor_single_vcfs', "{sample}.vcf")
+        #"test/output/tumor_single_vcfs/CGLU290.vcf"
     output:
         join(dir_annotated, "{sample}.vcf")
     params:
@@ -108,7 +108,8 @@ rule annotate:
     threads: 1
     shell:
         """
-        source {params.activate} {params.env_name} && {params.vep} --input_file {input} --format vcf --output_file stdout \
+        set +u; source {params.activate} {params.env_name}; set -u
+        {params.vep} --input_file {input} --format vcf --output_file stdout \
              --vcf --symbol --terms SO --plugin Downstream --plugin Wildtype \
              --dir_plugins {params.dir_plugin} --assembly {params.assembly_version} --fasta {params.fasta} \
              --dir_cache {params.dir_cache} --offline --cache_version {params.cache_version} --pick --force_overwrite \

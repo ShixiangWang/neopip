@@ -1,0 +1,4 @@
+
+        set +u; source /public/data/.neopip/miniconda/bin/activate neopip; set -u
+        vep --input_file test/output/tumor_single_vcfs/CGLU290.vcf --format vcf --output_file stdout              --vcf --symbol --terms SO --plugin Downstream --plugin Wildtype              --dir_plugins /public/data/.neopip/vep/VEP_plugins --assembly GRCh37 --fasta /public/data/.neopip/vep/homo_sapiens/91_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa              --dir_cache /public/data/.neopip/vep --offline --cache_version 91 --pick --force_overwrite              > test/output/neoantigen_calling/vep_annotated_vcfs/CGLU290.vcf
+        

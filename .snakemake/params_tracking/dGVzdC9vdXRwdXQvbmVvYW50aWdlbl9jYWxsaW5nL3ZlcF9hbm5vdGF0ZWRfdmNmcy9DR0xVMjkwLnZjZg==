@@ -1,0 +1,9 @@
+'/public/data/.neopip/miniconda/bin/activate'
+'/public/data/.neopip/vep'
+'/public/data/.neopip/vep/VEP_plugins'
+'/public/data/.neopip/vep/homo_sapiens/91_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa'
+'GRCh37'
+'neopip'
+'test/output/neoantigen_calling/vep_annotated_vcfs'
+'vep'
+91
