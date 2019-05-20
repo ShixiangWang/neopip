@@ -46,6 +46,7 @@ rule maf2vcf:
         maf = MAF
     output:
         glob.glob(join(config['output']['path'], 'tumor_single_vcfs', "*.vcf"))
+    log: '/tmp/neopip_log/maf2vcf.log'
     threads: config['threads']
     run:
         if not os.path.isfile(input.maf):
@@ -81,6 +82,34 @@ rule maf2vcf:
             run(cmds, check=True, shell=True)
         print("> Output tumor vcf files to %s" %dir_tumor_vcf)
         print("> Done.")
+
+dir_annotated = create_dir(config['output']['path'], 'neoantigen_calling', "vep_annotated_vcfs")
+
+rule vep_annotate:
+    input:
+        join(os.path.dirname(VCF) if 'VCF' in globals() else join(config['output']['path'], 'tumor_single_vcfs'), "{sample}.vcf")
+    output:
+        join(dir_annotated, "{sample}.vcf")
+    params:
+        activate = activate_exe,
+        env_name = env_name,
+        vep = VEP_PATH,
+        dir_plugin = VEP_PLUGIN_PATH,
+        assembly_version = VEP_ASSEMBLY_VERSION, 
+        fasta = reference_fasta,
+        dir_cache = VEP_DATA_PATH, 
+        cache_version = VEP_CACHE_VERSION,
+        dir_annotated = dir_annotated,
+    log: '/tmp/neopip_log/vep_annotate.log'
+    threads: 1
+    shell:
+        """
+        source {params.activate} {params.env_name} && {params.vep} --input_file {input} --format vcf --output_file stdout \
+             --vcf --symbol --terms SO --plugin Downstream --plugin Wildtype \
+             --dir_plugins {params.dir_plugin} --assembly {params.assembly_version} --fasta {params.fasta} \
+             --dir_cache {params.dir_cache} --offline --cache_version {params.cache_version} --pick --force_overwrite \
+             > {output}
+        """
 
 # # This process samples one by one
 # rule predict_neoantigen:
