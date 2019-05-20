@@ -43,6 +43,12 @@ conda_exe = os.environ['CONDA_EXE']
 activate_exe = join(os.path.dirname(conda_exe), 'activate')
 env_name = config['prepare']['conda']['env_name']
 
+
+# Target 
+# rule all:
+#     input:
+
+
 # If input variant file format is MAF
 # extra steps are needed.
 # rule maf2vcf:
