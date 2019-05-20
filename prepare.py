@@ -99,7 +99,6 @@ def main(neopip_loc=".neopip", conda_loc=".neopip/miniconda", vep_loc = ".neopip
     # when test in docker
     #conda_exe = join(conda_loc, 'bin/conda')
     activate_exe = join(os.path.dirname(conda_exe), 'activate')
-    print(conda_exe)
     # Create conda environments pvactools_py27
     logger.info("> Create pvactools_py27 environment")
     run("{} create -n pvactools_py27 python=2.7 biopython pyyaml -y".format(conda_exe), check=True, shell=True)
