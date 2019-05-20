@@ -34,6 +34,10 @@ VEP_ASSEMBLY_VERSION = config['vep']['assembly_version']
 
 reference_fasta   = config['reference']['fasta']
 
+# Output directories
+dir_annotated = create_dir(config['output']['path'], 'neoantigen_calling', "vep_annotated_vcfs")
+
+
 # Conda
 conda_exe = os.environ['CONDA_EXE']
 activate_exe = join(os.path.dirname(conda_exe), 'activate')
@@ -83,11 +87,11 @@ rule maf2vcf:
         print("> Output tumor vcf files to %s" %dir_tumor_vcf)
         print("> Done.")
 
-dir_annotated = create_dir(config['output']['path'], 'neoantigen_calling', "vep_annotated_vcfs")
-
-rule vep_annotate:
+rule annotate:
     input:
-        join(os.path.dirname(VCF) if 'VCF' in globals() else join(config['output']['path'], 'tumor_single_vcfs'), "{sample}.vcf")
+        #join(os.path.dirname(VCF) if 'VCF' in globals() else join(config['output']['path'], 'tumor_single_vcfs'), "{sample}.vcf")
+        #join(config['output']['path'], 'tumor_single_vcfs', "{sample}.vcf")
+        "test/output/tumor_single_vcfs/CGLU290.vcf"
     output:
         join(dir_annotated, "{sample}.vcf")
     params:
