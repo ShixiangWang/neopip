@@ -6,7 +6,7 @@ input:
     type: MAF
     path: test/input.maf
   hla:
-    path: test/input_hla.tsv
+    path: test/input_HLA.tsv
 
 # Output for prediction
 output:
