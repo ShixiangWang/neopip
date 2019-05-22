@@ -130,7 +130,7 @@ rule pvacseq_predict:
         vcf = rules.vep_annotate.output,
         hla = HLA
     output: 
-        dir_calling = directory("neopip_output/neoantigen_calling/{sample}")
+        directory("neopip_output/neoantigen_calling/{sample}/{method}/{anyway}")
     message: "> Predict neoantigens with pvacseq..."
     threads: config['threads']
     params:
@@ -157,9 +157,9 @@ rule pvacseq_predict:
 
 def get_final_tsv(wildcards):
     if wildcards.method == "MHC_Class_I":
-        return("neopip_output/neoantigen_calling/{wildcards.sample}/MHC_Class_I/{wildcards.sample}.final.tsv")
+        return ["neopip_output/neoantigen_calling/"+wildcards.sample+"/MHC_Class_I/"+wildcards.sample+".final.tsv"]
     elif wildcards.method == "MHC_Class_II":
-        return("neopip_output/neoantigen_calling/{wildcards.sample}/MHC_Class_II/{wildcards.sample}.final.tsv")
+        return ["neopip_output/neoantigen_calling/"+wildcards.sample+"/MHC_Class_II/"+wildcards.sample+".final.tsv"]
     else:
         raise(ValueError("Unrecognized wildcard value for 'method': %s" % wildcards.method))
 
