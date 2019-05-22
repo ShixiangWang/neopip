@@ -52,3 +52,11 @@ perl vcf2maf.pl --input-vcf tests/test.vcf --output-maf tests/test.vep.maf --vep
 
 perl maf2vcf.pl --input-maf tests/test.maf --output-dir test_maf2vcf  --ref-fasta /public/data/.neopip/vep/homo_sapiens/91_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa --per-tn-vcfs
 ```
+
+
+conda activate to source activate
+
+```
+/public/data/.neopip/miniconda/envs/neopip/lib/python3.7/site-packages/lib/prediction_class.py
+/public/data/.neopip/miniconda/envs/neopip/lib/python3.7/site-packages/lib/call_iedb.py
+```

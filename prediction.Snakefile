@@ -3,12 +3,10 @@ configfile: "config.yaml"
 import os
 import sys
 import glob
-import re
-import csv
 
 from pathlib import Path
 from os.path import join
-from subprocess import run, PIPE
+#from subprocess import run, PIPE
 from utils import create_dir
 from prepare import neopip_loc, vep_loc
 
@@ -38,9 +36,6 @@ vep_args['cache_version']   = config['vep']['cache_version']
 vep_args['assembly_version'] = config['vep']['assembly_version']
 
 reference_fasta   = config['reference']['fasta']
-
-# Output directories
-#dir_annotated = create_dir(config['output']['path'], 'neoantigen_calling', "vep_annotated_vcfs")
 
 
 # Conda
@@ -104,6 +99,7 @@ rule vep_annotate:
     input: get_input_vcfs
     output: "neopip_output/vep_annotated_vcfs/{sample}.vcf"
     message: "> Annotate VCF with VEP..."
+    threads: config['threads']
     params:
         activate = activate_exe,
         env_name = env_name,
@@ -121,6 +117,7 @@ rule vep_annotate:
              --vcf --symbol --terms SO --plugin Downstream --plugin Wildtype \
              --dir_plugins {params.dir_plugin} --assembly {params.assembly_version} --fasta {params.fasta} \
              --dir_cache {params.dir_cache} --offline --cache_version {params.cache_version} --pick --force_overwrite \
+             --fork {threads} \
              > {output}
         echo ">>> done"
         """
@@ -130,7 +127,7 @@ rule pvacseq_predict:
         vcf = rules.vep_annotate.output,
         hla = HLA
     output: 
-        directory("neopip_output/neoantigen_calling/{sample}/{method}/{anyway}")
+        "neopip_output/neoantigen_calling/{sample}/{method}/{sample}.final.tsv" # 这里这个判定非常奇怪
     message: "> Predict neoantigens with pvacseq..."
     threads: config['threads']
     params:
@@ -147,13 +144,15 @@ rule pvacseq_predict:
         {input.vcf} \
         {wildcards.sample} \
         $(grep {wildcards.sample} {input.hla} | awk '{{print $2}}') \
-        {params.methods} {output} \
+        {params.methods} neopip_output/neoantigen_calling/{wildcards.sample} \
         -e {params.epitope_len} \
         -a sample_name \
         -d 500 \
-        --iedb-install-directory {params.dir_iedb} 
+        --iedb-install-directory {params.dir_iedb} \
+        --n-threads {threads}
         echo ">>> done"
         """
+
 
 def get_final_tsv(wildcards):
     if wildcards.method == "MHC_Class_I":
