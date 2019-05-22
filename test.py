@@ -63,3 +63,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# snakemake --snakefile prediction.Snakefile -np neopip_output/maf2vcf/tumor_single_vcfs/CGLU259.vcf
+# snakemake --snakefile prediction.Snakefile -np neopip_output/vep_annotated_vcfs/CGLU259.vcf
+# snakemake --snakefile prediction.Snakefile -np neopip_output/neoantigen_list/MHC_I_CGLU259.tsv

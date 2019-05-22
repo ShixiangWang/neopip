@@ -1,5 +1,17 @@
 # This file is used to configure parameters for neoantigen prediction
 
+# Input for prediction
+input:
+  variants:
+    type: MAF
+    path: test/input.maf
+  hla:
+    path: test/input_hla.tsv
+
+# Output for prediction
+output:
+  path: test/output
+
 # Basic config for location of softwares
 prepare:
   # The home define the basic directory
@@ -34,9 +46,9 @@ threads: 4
 # use VEP cache data under .neopip/vep
 # If any path at the below set, it will be used first 
 vep:
-  vep_path   : null #/public/data/.neopip/miniconda/share/ensembl-vep-96.0-0/
-  plugin_path: null #~/VEP_plugins
-  cache_path : null #/public/data/.neopip/vep 
+  vep_path  : null #/public/data/.neopip/miniconda/share/ensembl-vep-96.0-0/
+  dir_plugin: null #~/VEP_plugins
+  dir_cache : null #/public/data/.neopip/vep 
   cache_version: 91
   assembly_version: GRCh37  # i.e. hg19
 
@@ -48,19 +60,6 @@ reference:
 vcf2maf:
   maf2vcf: maf2vcf.pl
   vcf2maf: vcf2maf.pl
-
-
-# Input for prediction
-input:
-  variants:
-    type: MAF
-    path: test/input.maf
-  hla:
-    path: test/input_hla.tsv
-
-# Output for prediction
-output:
-  path: test/output
 
 
 # Args of VEP

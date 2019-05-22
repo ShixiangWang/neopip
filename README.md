@@ -13,7 +13,7 @@ Following tools are needed before using **neopip**:
 - Python 3
   -  yaml
   -  csv
-  -  snakemake
+  -  snakemake >=5.4
 - tcsh 
 - gawk
 - wget
