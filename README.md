@@ -60,3 +60,5 @@ conda activate to source activate
 /public/data/.neopip/miniconda/envs/neopip/lib/python3.7/site-packages/lib/prediction_class.py
 /public/data/.neopip/miniconda/envs/neopip/lib/python3.7/site-packages/lib/call_iedb.py
 ```
+
+run snakemake with `--cores 4`

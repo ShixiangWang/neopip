@@ -16,7 +16,7 @@ from utils import create_dir, is_tool
 
 __author__ = "Shixiang Wang"
 __email__ = "wangshx@shanghaitech.edu.cn"
-__prediction_version__ = "1.4.0_mhci_2.19.1_mhcii_2.17.5"
+__prediction_version__ = "1.4.1_mhci_2.19.1_mhcii_2.17.5"
 __pvactools_version__ = __prediction_version__[:5]
 __mhc_i_version__ = __prediction_version__[11:17]
 __mhc_ii_version__ = __prediction_version__[-6:]
