@@ -62,3 +62,17 @@ conda activate to source activate
 ```
 
 run snakemake with `--cores 4`
+
+```
+If you specify at least one class I prediction algorithm and a class I MHC allele that the class I prediction algorithm supports then the MHC_Class_I directory will be written. If you specify at least one class II prediction algorithm and a class II MHC allele that the class II prediction algorithm supports then the MHC_Class_II directory will be written. If you specify both class I and class II prediction algorithms and class I and class II alleles then all three directories (MHC_Class_I, MHC_Class_II, combined) will be written.
+
+To run MHCnuggets on class I MHC alleles you will need to specify the MHCnuggetsI prediction algorithm. For class II MHC alleles it's MHCnuggetsII.
+
+pVACtools makes requests to the DTU Health Tech NetChop and NetMHCstabpan servers to add cleavage site and binding stability predictions.
+```
+
+
+```
+The pvacseq valid_alleles command doesn't provide this command directly but you can use the -p argument to specify a particular prediction algorithm and it will tell you which alleles are valid for it.
+```
+

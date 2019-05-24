@@ -7,7 +7,6 @@ import glob
 from pathlib import Path
 from os.path import join
 #from subprocess import run, PIPE
-from utils import create_dir
 from prepare import neopip_loc, vep_loc
 
 
@@ -42,12 +41,17 @@ reference_fasta   = config['reference']['fasta']
 conda_exe = os.environ['CONDA_EXE']
 activate_exe = join(os.path.dirname(conda_exe), 'activate')
 env_name = config['prepare']['conda']['env_name']
-
+# /bin/bash -l -c "conda activate" works
+# See: https://github.com/griffithlab/pVACtools/issues/396
 
 # Target 
 # rule all:
 #     input:
 
+#>>>>>>>>>> Support algorithms
+Algo_MHC_I  = ('NetMHCpan', 'NetMHC', 'NetMHCcons', 'PickPocket', 'SMM', 'SMMPMBEC', 'MHCflurry', 'MHCnuggetsI')
+Algo_MHC_II = ('NetMHCIIpan', 'SMMalign', 'NNalign', 'MHCnuggetsII')
+#<<<<<<<<<< 
 
 # If input variant file format is MAF
 # extra steps are needed.
@@ -127,7 +131,7 @@ rule pvacseq_predict:
         vcf = rules.vep_annotate.output,
         hla = HLA
     output: 
-        "neopip_output/neoantigen_calling/{sample}/{method}/{sample}.final.tsv" # 这里这个判定非常奇怪
+        "neopip_output/neoantigen_calling/{sample}/{method}/{sample}.filtered.condensed.ranked.tsv" # 这里这个判定非常奇怪
     message: "> Predict neoantigens with pvacseq..."
     threads: config['threads']
     params:
@@ -156,12 +160,18 @@ rule pvacseq_predict:
 
 def get_final_tsv(wildcards):
     if wildcards.method == "MHC_Class_I":
-        return ["neopip_output/neoantigen_calling/"+wildcards.sample+"/MHC_Class_I/"+wildcards.sample+".final.tsv"]
+        return ["neopip_output/neoantigen_calling/"+wildcards.sample+"/MHC_Class_I/"+wildcards.sample+".filtered.condensed.ranked.tsv"]
     elif wildcards.method == "MHC_Class_II":
-        return ["neopip_output/neoantigen_calling/"+wildcards.sample+"/MHC_Class_II/"+wildcards.sample+".final.tsv"]
+        return ["neopip_output/neoantigen_calling/"+wildcards.sample+"/MHC_Class_II/"+wildcards.sample+".filtered.condensed.ranked.tsv"]
     else:
         raise(ValueError("Unrecognized wildcard value for 'method': %s" % wildcards.method))
 
+
+# https://pvactools.readthedocs.io/en/latest/pvacseq/output_files.html
+# Three possible output directory
+# MHC_Class_I: for MHC class I prediction algorithms
+# MHC_Class_II: for MHC class II prediction algorithms
+# combined: If both MHC class I and MHC class II prediction algorithms were run, this folder combines the neoeptiope predictions from both
 rule summary_neoantigen:
     input: get_final_tsv
     output: "neopip_output/neoantigen_list/{method}_{sample}.tsv"
