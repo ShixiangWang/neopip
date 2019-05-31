@@ -67,3 +67,4 @@ if __name__ == "__main__":
 # snakemake --snakefile prediction.Snakefile -np neopip_output/maf2vcf/tumor_single_vcfs/CGLU259.vcf
 # snakemake --snakefile prediction.Snakefile -np neopip_output/vep_annotated_vcfs/CGLU259.vcf
 # snakemake --snakefile prediction.Snakefile -np neopip_output/neoantigen_list/MHC_Class_I_CGLU259.tsv
+snakemake --dag neopip_output/neoantigen_list/MHC_Class_I_CGLU259.tsv | dot -Tsvg > dag.svg
